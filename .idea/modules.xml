@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/llxbigdataall.iml" filepath="$PROJECT_DIR$/llxbigdataall.iml" />
+      <module fileurl="file://$PROJECT_DIR$/llxhadoop/llxhadoop.iml" filepath="$PROJECT_DIR$/llxhadoop/llxhadoop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/llxhbase/llxhbase.iml" filepath="$PROJECT_DIR$/llxhbase/llxhbase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/llxhiveOrPig/llxhiveOrPig.iml" filepath="$PROJECT_DIR$/llxhiveOrPig/llxhiveOrPig.iml" />
+    </modules>
+  </component>
+</project>

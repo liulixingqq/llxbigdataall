@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <excludeFromCompile>
+      <directory url="file://E:/Java/jdk1.8.0_121" includeSubdirectories="true" />
+    </excludeFromCompile>
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="llxhadoop" />
+        <module name="llxhbase" />
+        <module name="llxhiveOrPig" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="1.8">
+      <module name="llxbigdataall" target="1.5" />
+      <module name="llxhadoop" target="1.5" />
+      <module name="llxhbase" target="1.5" />
+      <module name="llxhiveOrPig" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
