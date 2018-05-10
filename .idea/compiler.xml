@@ -13,6 +13,7 @@
         <module name="llxhadoop" />
         <module name="llxhbase" />
         <module name="llxhiveOrPig" />
+        <module name="llxhuanCun" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
@@ -20,6 +21,7 @@
       <module name="llxhadoop" target="1.5" />
       <module name="llxhbase" target="1.5" />
       <module name="llxhiveOrPig" target="1.5" />
+      <module name="llxhuanCun" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>

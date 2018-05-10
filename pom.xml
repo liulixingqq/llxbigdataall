@@ -12,7 +12,19 @@
         <module>llxhadoop</module>
         <module>llxhbase</module>
         <module>llxhiveOrPig</module>
+        <module>llxhuanCun</module>
     </modules>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <junitversion>4.12</junitversion> <!-- 全局变量定义版本,以方便统一管理 -->
+    </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junitversion}</version>
+        </dependency>
+    </dependencies>
 
 </project>

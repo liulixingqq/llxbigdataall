@@ -3,5 +3,8 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/llxhadoop" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/llxhbase" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/llxhiveOrPig" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/llxhuanCun" charset="UTF-8" />
   </component>
 </project>
