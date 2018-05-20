@@ -63,7 +63,7 @@ public class TestMemCached {
 		 * 启动三个MemCached实例，客户端的路由算法
 		 */
         //创建一个List
-        List<InetSocketAddress> list = new ArrayList<>();
+        List<InetSocketAddress> list = new ArrayList<InetSocketAddress>();
         list.add(new InetSocketAddress("192.168.157.11", 11211));
         list.add(new InetSocketAddress("192.168.157.11", 11212));
         list.add(new InetSocketAddress("192.168.157.11", 11213));

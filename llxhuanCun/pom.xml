@@ -12,12 +12,20 @@
     <artifactId>llx.huanCun</artifactId>
 
 <dependencies>
-    <!-- https://mvnrepository.com/artifact/spy/memcached -->
+    <!-- https://mvnrepository.com/artifact/com.whalin/Memcached-Java-Client -->
     <dependency>
-        <groupId>spy</groupId>
-        <artifactId>memcached</artifactId>
-        <version>2.4rc1</version>
+        <groupId>com.whalin</groupId>
+        <artifactId>Memcached-Java-Client</artifactId>
+        <version>3.0.2</version>
     </dependency>
+
+    <dependency>
+        <groupId>net.spy</groupId>
+        <artifactId>spymemcached</artifactId>
+        <version>2.11.3</version>
+    </dependency>
+
+
 
     <!-- https://mvnrepository.com/artifact/spy/memcached -->
     <!-- https://mvnrepository.com/artifact/com.twitter/finagle-memcached -->
@@ -26,6 +34,20 @@
         <artifactId>finagle-memcached_2.12</artifactId>
         <version>18.5.0</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.zookeeper/zookeeper -->
+    <dependency>
+        <groupId>org.apache.zookeeper</groupId>
+        <artifactId>zookeeper</artifactId>
+        <version>3.5.4-beta</version>
+        <type>pom</type>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+    <dependency>
+        <groupId>redis.clients</groupId>
+        <artifactId>jedis</artifactId>
+        <version>2.9.0</version>
+    </dependency>
+
 
 </dependencies>
 </project>
