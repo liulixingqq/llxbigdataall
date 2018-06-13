@@ -7,7 +7,6 @@
       <module fileurl="file://$PROJECT_DIR$/llxhadoop/llxhadoop.iml" filepath="$PROJECT_DIR$/llxhadoop/llxhadoop.iml" />
       <module fileurl="file://$PROJECT_DIR$/llxhbase/llxhbase.iml" filepath="$PROJECT_DIR$/llxhbase/llxhbase.iml" />
       <module fileurl="file://$PROJECT_DIR$/llxhiveOrPig/llxhiveOrPig.iml" filepath="$PROJECT_DIR$/llxhiveOrPig/llxhiveOrPig.iml" />
-      <module fileurl="file://$PROJECT_DIR$/llxhuanCun/llxhuanCun.iml" filepath="$PROJECT_DIR$/llxhuanCun/llxhuanCun.iml" />
       <module fileurl="file://$PROJECT_DIR$/llxstrom/llxstrom.iml" filepath="$PROJECT_DIR$/llxstrom/llxstrom.iml" />
     </modules>
   </component>
