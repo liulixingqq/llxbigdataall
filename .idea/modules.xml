@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/llxhbase/llxhbase.iml" filepath="$PROJECT_DIR$/llxhbase/llxhbase.iml" />
       <module fileurl="file://$PROJECT_DIR$/llxhiveOrPig/llxhiveOrPig.iml" filepath="$PROJECT_DIR$/llxhiveOrPig/llxhiveOrPig.iml" />
       <module fileurl="file://$PROJECT_DIR$/llxstrom/llxstrom.iml" filepath="$PROJECT_DIR$/llxstrom/llxstrom.iml" />
+      <module fileurl="file://$PROJECT_DIR$/scalaspark/scalaspark.iml" filepath="$PROJECT_DIR$/scalaspark/scalaspark.iml" />
     </modules>
   </component>
 </project>

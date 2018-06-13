@@ -16,6 +16,7 @@
         <module name="llxhiveOrPig" />
         <module name="llxhuanCun" />
         <module name="llxstrom" />
+        <module name="scalaspark" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
@@ -26,6 +27,7 @@
       <module name="llxhiveOrPig" target="1.5" />
       <module name="llxhuanCun" target="1.5" />
       <module name="llxstrom" target="1.5" />
+      <module name="scalaspark" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>
