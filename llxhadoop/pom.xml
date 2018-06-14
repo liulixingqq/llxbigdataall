@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>llx-bigdata-all</artifactId>
+        <groupId>llx.bigdata</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>llx-hadoop</artifactId>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <junitversion>4.12</junitversion> <!-- 全局变量定义版本,以方便统一管理 -->
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>2.7.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-mapreduce-client-core</artifactId>
+            <version>2.7.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junitversion}</version>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <finalName>bigdata11</finalName><!--打包完成文件的名字-->
+        <plugins>
+            <plugin><!--maven-jar-plugin用于生成META-INF/MANIFEST.MF文件的部分内容-->
+                <groupId>org.apache.maven.plugins</groupId> <!--引入maven插件的groupId-->
+                <artifactId>maven-jar-plugin</artifactId> <!--引入maven插件的artifactId-->
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath><!--MANIFEST.MF 是否增加依赖包-->
+                            <classpathPrefix>lib/</classpathPrefix><!--MANIFEST.MF文件 依赖包位置格式-->
+                            <mainClass>proxy.demo.TestMain</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin><!--maven-dependency-plugin插件用于将依赖包拷贝到<outputDirectory>${project.build.directory}/lib</outputDirectory>指定的位置，即lib目录下-->
+                <groupId>org.apache.maven.plugins</groupId><!--将依赖包放到物理存储外部-->
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+
+
+    <!--第一版 maven-jar-plugin  maven-dependency-plugin-->
+
+    <!--<build>-->
+    <!--<finalName>bigdata11</finalName>&lt;!&ndash;打包完成文件的名字&ndash;&gt;-->
+    <!--<plugins>-->
+    <!--<plugin>&lt;!&ndash;maven-jar-plugin用于生成META-INF/MANIFEST.MF文件的部分内容&ndash;&gt;-->
+    <!--<groupId>org.apache.maven.plugins</groupId> &lt;!&ndash;引入maven插件的groupId&ndash;&gt;-->
+    <!--<artifactId>maven-jar-plugin</artifactId> &lt;!&ndash;引入maven插件的artifactId&ndash;&gt;-->
+    <!--<version>2.4</version>-->
+    <!--<configuration>-->
+    <!--<archive>-->
+    <!--<manifest>-->
+    <!--<addClasspath>true</addClasspath>&lt;!&ndash;MANIFEST.MF 是否增加依赖包&ndash;&gt;-->
+    <!--<classpathPrefix>lib/</classpathPrefix>&lt;!&ndash;MANIFEST.MF文件 依赖包位置格式&ndash;&gt;-->
+    <!--<mainClass>wc.WordCountMain</mainClass>-->
+    <!--</manifest>-->
+    <!--</archive>-->
+    <!--</configuration>-->
+    <!--</plugin>-->
+
+    <!--<plugin>&lt;!&ndash;maven-dependency-plugin插件用于将依赖包拷贝到<outputDirectory>${project.build.directory}/lib</outputDirectory>指定的位置，即lib目录下&ndash;&gt;-->
+    <!--<groupId>org.apache.maven.plugins</groupId>&lt;!&ndash;将依赖包放到物理存储外部&ndash;&gt;-->
+    <!--<artifactId>maven-dependency-plugin</artifactId>-->
+    <!--<version>2.4</version>-->
+    <!--<executions>-->
+    <!--<execution>-->
+    <!--<id>copy-dependencies</id>-->
+    <!--<phase>package</phase>-->
+    <!--<goals>-->
+    <!--<goal>copy-dependencies</goal>-->
+    <!--</goals>-->
+    <!--<configuration>-->
+    <!--<outputDirectory>${project.build.directory}/lib</outputDirectory>-->
+    <!--</configuration>-->
+    <!--</execution>-->
+    <!--</executions>-->
+    <!--</plugin>-->
+    <!--</plugins>-->
+    <!--</build>-->
+
+
+    <!--第二版  maven-assembly-plugin-->
+    <!--<build>-->
+    <!--<plugins>-->
+    <!--<plugin>-->
+    <!--<groupId>org.apache.maven.plugins</groupId>-->
+    <!--<artifactId>maven-assembly-plugin</artifactId>-->
+    <!--<version>2.5.5</version>-->
+    <!--<configuration>-->
+    <!--&lt;!&ndash;依赖装配 false：指的是，把依赖包跟java程序打包成一个jar文件内；true（默认）：指的是，把依赖包单独打包成一个jar文件&ndash;&gt;-->
+    <!--<appendAssemblyId>false</appendAssemblyId>-->
+    <!--<descriptorRefs>-->
+    <!--<descriptorRef>jar-with-dependencies</descriptorRef>-->
+    <!--</descriptorRefs>-->
+    <!--<archive>-->
+    <!--<manifest>-->
+    <!--&lt;!&ndash;此处指定main方法入口的class&ndash;&gt;-->
+    <!--<mainClass>wc.WordCountMain</mainClass>-->
+    <!--</manifest>-->
+    <!--</archive>-->
+    <!--</configuration>-->
+
+    <!--<executions>-->
+    <!--<execution>-->
+    <!--&lt;!&ndash;代表执行插件&ndash;&gt;-->
+    <!--<id>make-assembly</id>-->
+    <!--<phase>package</phase>-->
+    <!--<goals>-->
+    <!--<goal>assembly</goal>-->
+    <!--</goals>-->
+    <!--</execution>-->
+    <!--</executions>-->
+    <!--</plugin>-->
+    <!--</plugins>-->
+    <!--</build>-->
+
+
+    <!--第三版  maven-jar-plugin   maven-assembly-plugin-->
+
+    <!--<build>-->
+    <!--<plugins>-->
+    <!--&lt;!&ndash;插件1&ndash;&gt;-->
+    <!--<plugin>-->
+    <!--<groupId>org.apache.maven.plugins</groupId>-->
+    <!--<artifactId>maven-jar-plugin</artifactId>-->
+    <!--<version>2.4</version>-->
+    <!--<configuration>-->
+    <!--<archive>-->
+    <!--&lt;!&ndash; false:生成的jar中，不要包含pom.xml和pom.properties这两个文件&ndash;&gt;-->
+    <!--<addMavenDescriptor>true</addMavenDescriptor>-->
+    <!--<manifest>-->
+    <!--&lt;!&ndash;true:是否要把第三方jar放到manifest的classpath中&ndash;&gt;-->
+    <!--<addClasspath>true</addClasspath>-->
+    <!--&lt;!&ndash;生成的manifest中classpath的前缀，因为要把第三方jar放到lib目录下，所以classpath的前缀是lib/&ndash;&gt;-->
+    <!--<classpathPrefix>lib/</classpathPrefix>-->
+    <!--&lt;!&ndash;应用的main class&ndash;&gt;-->
+    <!--<mainClass>wc.WordCountMain</mainClass>-->
+    <!--</manifest>-->
+    <!--</archive>-->
+    <!--&lt;!&ndash;过滤掉不希望包含在jar中的文件&ndash;&gt;-->
+    <!--<excludes>-->
+    <!--<exclude>${project.basedir}/xml/*</exclude>-->
+    <!--</excludes>-->
+    <!--</configuration>-->
+    <!--</plugin>-->
+    <!--&lt;!&ndash;插件2&ndash;&gt;-->
+    <!--<plugin>-->
+    <!--<groupId>org.apache.maven.plugins</groupId>-->
+    <!--<artifactId>maven-assembly-plugin</artifactId>-->
+    <!--<version>2.4</version>-->
+    <!--<configuration>-->
+    <!--<descriptors>-->
+    <!--<descriptor>src/main/assembly/package.xml</descriptor>-->
+    <!--</descriptors>-->
+    <!--</configuration>-->
+    <!--<executions>-->
+    <!--<execution>-->
+    <!--<id>make-assembly</id>-->
+    <!--<phase>package</phase>-->
+    <!--<goals>-->
+    <!--<goal>single</goal>-->
+    <!--</goals>-->
+    <!--</execution>-->
+    <!--</executions>-->
+    <!--</plugin>-->
+    <!--</plugins>-->
+    <!--</build>-->
+
+
+
+
+
+    <!--第四版  maven-jar-plugin   maven-assembly-plugin-->
+
+    <!--<build>-->
+    <!--<plugins>-->
+    <!--<plugin>-->
+    <!--<groupId>org.apache.maven.plugins</groupId>-->
+    <!--<artifactId>maven-jar-plugin</artifactId>-->
+    <!--<version>2.4</version>-->
+    <!--<configuration>-->
+    <!--<archive>-->
+    <!--&lt;!&ndash; false:生成的jar中，不要包含pom.xml和pom.properties这两个文件&ndash;&gt;-->
+    <!--<addMavenDescriptor>true</addMavenDescriptor>-->
+    <!--<manifest>-->
+    <!--&lt;!&ndash;true:是否要把第三方jar放到manifest的classpath中&ndash;&gt;-->
+    <!--<addClasspath>true</addClasspath>-->
+    <!--&lt;!&ndash;生成的manifest中classpath的前缀，因为要把第三方jar放到lib目录下，所以classpath的前缀是lib/&ndash;&gt;-->
+    <!--<classpathPrefix>lib/</classpathPrefix>-->
+    <!--&lt;!&ndash;应用的main class&ndash;&gt;-->
+    <!--<mainClass>wc.WordCountMain</mainClass>-->
+    <!--</manifest>-->
+    <!--</archive>-->
+    <!--&lt;!&ndash;过滤掉不希望包含在jar中的文件&ndash;&gt;-->
+    <!--<excludes>-->
+    <!--<exclude>${project.basedir}/xml/*</exclude>-->
+    <!--</excludes>-->
+    <!--</configuration>-->
+    <!--</plugin>-->
+
+    <!--<plugin>-->
+    <!--<groupId>org.apache.maven.plugins</groupId>-->
+    <!--<artifactId> maven-assembly-plugin </artifactId>-->
+    <!--<version>2.5.5</version>-->
+    <!--<configuration>-->
+    <!--<descriptors>-->
+    <!--&lt;!&ndash; 描述文件路径 &ndash;&gt;-->
+    <!--<descriptor>src/main/assembly/assembly.xml</descriptor>-->
+    <!--</descriptors>-->
+    <!--<archive>-->
+    <!--<manifest>-->
+    <!--<mainClass>wc.WordCountMain</mainClass>-->
+    <!--</manifest>-->
+    <!--</archive>-->
+    <!--</configuration>-->
+    <!--<executions>-->
+    <!--<execution>-->
+    <!--&lt;!&ndash;名字任意 &ndash;&gt;-->
+    <!--<id>make-assembly</id>-->
+    <!--&lt;!&ndash; 绑定到package生命周期阶段上 &ndash;&gt;-->
+    <!--<phase>package</phase>-->
+    <!--<goals>-->
+    <!--&lt;!&ndash; 只运行一次 &ndash;&gt;-->
+    <!--<goal>single</goal>-->
+    <!--</goals>-->
+    <!--</execution>-->
+    <!--</executions>-->
+    <!--</plugin>-->
+    <!--</plugins>-->
+    <!--</build>-->
+
+
+
+
+
+    <!--<build>-->
+    <!--<finalName>bigdata11</finalName>&lt;!&ndash;打包完成文件的名字&ndash;&gt;-->
+    <!--<plugins>-->
+    <!--<plugin>&lt;!&ndash;maven-jar-plugin用于生成META-INF/MANIFEST.MF文件的部分内容&ndash;&gt;-->
+    <!--<groupId>org.apache.maven.plugins</groupId> &lt;!&ndash;引入maven插件的groupId&ndash;&gt;-->
+    <!--<artifactId>maven-jar-plugin</artifactId> &lt;!&ndash;引入maven插件的artifactId&ndash;&gt;-->
+    <!--<version>2.4</version>-->
+    <!--<configuration>-->
+    <!--<archive>-->
+    <!--<manifest>-->
+    <!--<addClasspath>true</addClasspath>&lt;!&ndash;MANIFEST.MF 是否增加依赖包&ndash;&gt;-->
+    <!--<classpathPrefix>lib/</classpathPrefix>&lt;!&ndash;MANIFEST.MF文件 依赖包位置格式&ndash;&gt;-->
+    <!--<mainClass>wc.WordCountMain2</mainClass>-->
+    <!--</manifest>-->
+    <!--</archive>-->
+    <!--</configuration>-->
+    <!--</plugin>-->
+    <!--</plugins>-->
+    <!--</build>-->
+
+
+
+
+    <!--<build>-->
+    <!--<finalName>bigdata11</finalName>&lt;!&ndash;打包完成文件的名字&ndash;&gt;-->
+    <!--<plugins>-->
+    <!--<plugin>&lt;!&ndash;maven-jar-plugin用于生成META-INF/MANIFEST.MF文件的部分内容&ndash;&gt;-->
+    <!--<groupId>org.apache.maven.plugins</groupId> &lt;!&ndash;引入maven插件的groupId&ndash;&gt;-->
+    <!--<artifactId>maven-jar-plugin</artifactId> &lt;!&ndash;引入maven插件的artifactId&ndash;&gt;-->
+    <!--<version>2.4</version>-->
+    <!--<configuration>-->
+    <!--<archive>-->
+    <!--<manifest>-->
+    <!--<addClasspath>true</addClasspath>&lt;!&ndash;MANIFEST.MF 是否增加依赖包&ndash;&gt;-->
+    <!--<classpathPrefix>lib/</classpathPrefix>&lt;!&ndash;MANIFEST.MF文件 依赖包位置格式&ndash;&gt;-->
+    <!--<mainClass>wc.WordCountMain1</mainClass>-->
+    <!--</manifest>-->
+    <!--</archive>-->
+    <!--</configuration>-->
+    <!--</plugin>-->
+
+    <!--<plugin>&lt;!&ndash;maven-dependency-plugin插件用于将依赖包拷贝到<outputDirectory>${project.build.directory}/lib</outputDirectory>指定的位置，即lib目录下&ndash;&gt;-->
+    <!--<groupId>org.apache.maven.plugins</groupId>&lt;!&ndash;将依赖包放到物理存储外部&ndash;&gt;-->
+    <!--<artifactId>maven-dependency-plugin</artifactId>-->
+    <!--<version>2.4</version>-->
+    <!--<executions>-->
+    <!--<execution>-->
+    <!--<id>copy-dependencies</id>-->
+    <!--<phase>package</phase>-->
+    <!--<goals>-->
+    <!--<goal>copy-dependencies</goal>-->
+    <!--</goals>-->
+    <!--<configuration>-->
+    <!--<outputDirectory>${project.build.directory}/lib</outputDirectory>-->
+    <!--</configuration>-->
+    <!--</execution>-->
+    <!--</executions>-->
+    <!--</plugin>-->
+    <!--</plugins>-->
+    <!--</build>-->
+</project>
