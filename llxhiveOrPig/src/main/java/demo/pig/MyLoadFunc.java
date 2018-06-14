@@ -16,11 +16,9 @@ import org.apache.pig.data.TupleFactory;
 import java.io.IOException;
 
 /**
- * description
- *
- * @author Llx
- * @version v1.0.0
- * @since 2018/4/15
+ * 1、输入流（getInputFormat）  ---> 输入的路径（setLocation）
+ * 2、输入的格式(prepareRead)
+ * 3、登录得到值getNext
  */
 public class MyLoadFunc extends LoadFunc {
 
