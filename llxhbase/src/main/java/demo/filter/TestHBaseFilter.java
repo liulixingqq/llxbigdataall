@@ -28,10 +28,10 @@ public class TestHBaseFilter {
 
         SingleColumnValueFilter filter =
                 new SingleColumnValueFilter(
-                        Bytes.toBytes("empinfo"),
-                        Bytes.toBytes("sal"),
-                        CompareFilter.CompareOp.EQUAL,
-                        Bytes.toBytes("3000"));
+                        Bytes.toBytes("empinfo"), //列簇
+                        Bytes.toBytes("sal"), // name
+                        CompareFilter.CompareOp.EQUAL, //过滤方式
+                        Bytes.toBytes("3000")); //过滤数值
 
 
         //创建扫描器，并添加过滤器
@@ -116,7 +116,8 @@ public class TestHBaseFilter {
         HTable table = new HTable(conf,"emp");
 
 
-        RowFilter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("7839"));
+        RowFilter filter = new RowFilter(CompareFilter.CompareOp.EQUAL,//rowkey
+                            new RegexStringComparator("7839"));//rowkey的值
 
         Scan scan = new Scan();
         scan.setFilter(filter);

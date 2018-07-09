@@ -40,10 +40,10 @@ public class WordCountTopology {
         builder.setBolt("mywordcount_total", new WordCountTotalBolt()).fieldsGrouping("mywordcount_split", new Fields("word"));
 
         //设置任务的第四个组件：bolt组件，将结果写到Redis中
-        //builder.setBolt("mywordcount_redis", createRedisBolt()).shuffleGrouping("mywordcount_total");
+        builder.setBolt("mywordcount_redis", createRedisBolt()).shuffleGrouping("mywordcount_total");
 
         //设置任务的第四个组件：bolt组件，将结果写到HDFS中
-        //builder.setBolt("mywordcount_hdfs", createHDFSBolt()).shuffleGrouping("mywordcount_total");
+        builder.setBolt("mywordcount_hdfs", createHDFSBolt()).shuffleGrouping("mywordcount_total");
 
         //设置任务的第四个组件：bolt组件，将结果写到HBase中
         builder.setBolt("mywordcount_hdfs", new WordCountHBaseBolt()).shuffleGrouping("mywordcount_total");
@@ -82,7 +82,7 @@ public class WordCountTopology {
         //与HDFS进行同步的策略：当tuple的数据达到1K?????
         bolt.withSyncPolicy(new CountSyncPolicy(1024));
 
-        return bolt;
+        return (IRichBolt)bolt;
     }
 
     private static IRichBolt createRedisBolt() {
