@@ -1,0 +1,45 @@
+5、操作Hive的表（需要配置）
+		（*）复习Hive
+			（1）基于HDFS之上的数据仓库
+					表（分区） ---> HDFS目录
+					数据       ---> HDFS文件
+			（2）是一个数据分析引擎，支持SQL
+			（3）翻译器：SQL ---> MapReduce程序
+					注意：从Hive 2.x开始，推荐使用Spark作为执行引擎（目前不成熟，还在开发）
+					https://cwiki.apache.org/confluence/display/Hive/Hive+on+Spark%3A+Getting+Started
+
+		（*）如何使用Spark SQL加载Hive的数据？
+				文档：http://spark.apache.org/docs/latest/sql-programming-guide.html#hive-tables
+				步骤：
+				（1）把Hive的配置文件和Hadoop的配置文件 ----> $SPARK_HOME/conf
+						hive-site.xml
+						core-site.xml
+						hdfs-site.xml
+					cp hadoop-2.7.3/etc/hadoop/core-site.xml spark-2.1.0-bin-hadoop2.7/conf/
+					cp hadoop-2.7.3/etc/hadoop/hdfs-site.xml spark-2.1.0-bin-hadoop2.7/conf/
+					cp apache-hive-2.3.0-bin/conf/hive-site.xml spark-2.1.0-bin-hadoop2.7/conf/
+
+
+				（2）启动spark-shell的时候，加入mysql的驱动
+					bin/spark-shell --master spark://bigdata11:7077 --jars /root/temp/mysql-connector-java-5.1.43-bin.jar
+
+				（3）参考讲义上的例子：P
+
+
+
+
+
+1、如何缓存数据（表的数据、DataFrame的数据）
+		举例：读取Oracle数据库
+		val oracleEmp = spark.read.format("jdbc").option("url","jdbc:oracle:thin:@192.168.157.101:1521/orcl.example.com").option("dbtable","scott.emp").option("user","scott").option("password","tiger").load
+
+		注册表：oracleEmp.registerTempTable("emp")
+		因为是：视图不能存储数据
+
+		执行查询：
+		 spark.sql("select * from emp").show
+
+		缓存数据: spark.sqlContext.cacheTable("emp")
+		执行查询（两次）：
+		spark.sql("select * from emp").show
+		spark.sql("select * from emp").show
