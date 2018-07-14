@@ -1,0 +1,35 @@
+操作DataFrame: DSL语句和SQL语句
+		（1）DSL（不常用）
+			查询所有的员工信息:  df.show
+			查询员工信息：姓名
+			    df.select("ename").show
+				df.select($"ename").show
+
+			查询员工信息： 姓名  薪水  薪水+100
+			    df.select($"ename",$"sal",$"sal"+100).show
+
+			查询工资大于2000的员工
+			    df.filter($"sal" > 2000).show
+			分组：
+			   df.groupBy($"deptno").count.show
+
+		（2）SQL: 注意：需要将DataFrame注册成一个视图(view)
+				df.createOrReplaceTempView("emp")
+
+				spark.sql("select * from emp").show
+				spark.sql("select * from emp where deptno=10").show
+				spark.sql("select deptno,sum(sal) from emp group by deptno").show
+
+	5、临时视图view：2种
+		（1）只在当前会话中有效：df.createOrReplaceTempView("emp")
+		（2）Global Temporay View 在全局范围都有效（不同的会话中）
+	                             df.createGlobalTempView("empG")  ----> 相当于：在Spark SQL的"全局数据库"上创建的: 前缀: global_temp
+
+		（3）示例
+				在当前会话中:
+				spark.sql("select * from emp").show
+				spark.sql("select * from global_temp.empG").show
+
+				开启一个新的会话，重新查询
+				spark.newSession.sql("select * from emp").show  ----> 出错
+				spark.newSession.sql("select * from global_temp.empG").show

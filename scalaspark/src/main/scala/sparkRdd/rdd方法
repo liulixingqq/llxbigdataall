@@ -1,0 +1,175 @@
+Transformation算子：不会触发计算、延时加载（lazy值）
+		map(func)：该操作是对原来的RDD进行操作后，返回一个新的RDD
+		filter: 过滤操作、返回一个新的RDD
+		flatMap：类似map
+		mapPartitions：对每个分区进行操作
+		mapPartitionsWithIndex: 对每个分区进行操作，带分区的下标
+		union   并集
+		intersection 交集
+		distinct  去重
+		groupByKey:   都是按照Key进行分组
+		reduceByKey:  都是按照Key进行分组、会有一个本地操作（相当于：Combiner操作）
+
+	3、Action算子：会触发计算
+		collect: 触发计算、打印屏幕上。以数组形式返回
+		count:  求个数
+		first: 第一个元素（take(1)）
+		take(n)
+		saveAsTextFile: 会转成String的形式，会调用toString()方法
+		foreach: 在RDD的每个元素上进行某个操作
+
+	4、RDD的缓存机制：默认在内存中
+		（*）提高效率
+		（*）默认：缓存在Memory中
+		（*）调用：方法：persist或者cache
+
+			def persist(): this.type = persist(StorageLevel.MEMORY_ONLY)
+			def cache(): this.type = persist()
+
+		（*）缓存的位置：StorageLevel定义的
+			  val NONE = new StorageLevel(false, false, false, false)
+			  val DISK_ONLY = new StorageLevel(true, false, false, false)
+			  val DISK_ONLY_2 = new StorageLevel(true, false, false, false, 2)
+			  val MEMORY_ONLY = new StorageLevel(false, true, false, true)
+			  val MEMORY_ONLY_2 = new StorageLevel(false, true, false, true, 2)
+			  val MEMORY_ONLY_SER = new StorageLevel(false, true, false, false)
+			  val MEMORY_ONLY_SER_2 = new StorageLevel(false, true, false, false, 2)
+			  val MEMORY_AND_DISK = new StorageLevel(true, true, false, true)
+			  val MEMORY_AND_DISK_2 = new StorageLevel(true, true, false, true, 2)
+			  val MEMORY_AND_DISK_SER = new StorageLevel(true, true, false, false)
+			  val MEMORY_AND_DISK_SER_2 = new StorageLevel(true, true, false, false, 2)
+			  val OFF_HEAP = new StorageLevel(true, true, true, false, 1)
+
+		（*）示例：
+				测试数据：Oracle数据库的订单变 sales表（大概92万）
+				步骤
+				（1）读入数据
+				     val rdd1 = sc.textFile("hdfs://bigdata11:9000/input/sales")
+
+				（2）计算
+				      rdd1.count      ---> Action，这一次没有缓存
+					  rdd1.cache      ---> 缓存数据，但是不会触发计算，cache是一个Transformation
+					  rdd1.count      ----> 触发计算，将结果缓存
+					  rdd1.count      ----> ???会从哪里得到数据
+
+
+Spark RDD的高级算子
+	1、mapPartitionsWithIndex: 对RDD中的每个分区进行操作，带有分区号
+		定义：def mapPartitionsWithIndex[U](f: (Int, Iterator[T])=>Iterator[U], preservesPartitioning: Boolean = false)
+		                  (implicit arg0: ClassTag[U]): RDD[U]
+		参数说明：
+		f: (Int, Iterator[T])=>Iterator[U]
+		（*）Int: 分区号
+		（*）Iterator[T]: 该分区中的每个元素
+		（*）返回值：Iterator[U]
+
+		Demo：
+		（1）创建一个RDD：val rdd1 = sc.parallelize(List(1,2,3,4,5,6,7,8,9),2)
+		（2）创建一个函数，作为f的值
+				def func1(index:Int,iter:Iterator[Int]):Iterator[String] ={
+				   iter.toList.map(x=>"[PartID:" + index +",value="+x+"]").iterator
+				}
+
+		（3）调用
+		      rdd1.mapPartitionsWithIndex(func1).collect
+
+		（4）结果：
+		Array([PartID:0,value=1], [PartID:0,value=2], [PartID:0,value=3], [PartID:0,value=4],
+		      [PartID:1,value=5], [PartID:1,value=6], [PartID:1,value=7], [PartID:1,value=8], [PartID:1,value=9])
+
+
+	2、aggregate：聚合操作
+		定义：def aggregate[U: ClassTag](zeroValue: U)(seqOp: (U, T) => U, combOp: (U, U) => U): U
+		作用：先对局部进行操作，再对全局进行操作
+
+		举例：
+		val rdd1 = sc.parallelize(List(1,2,3,4,5),2)
+		（1）求每个分区最大值的和
+		    先查看每个分区中的元素:
+			rdd1..mapPartitionsWithIndex(func1).collect
+
+			rdd1.aggregate(0)(math.max(_,_),_+_)
+
+		（2）改一下：
+				rdd1.aggregate(0)(_+_,_+_)              ====> 15
+				rdd1.aggregate(10)(math.max(_,_),_+_)   ===>  30
+
+		（3）讲义上，还有一个字符串的例子 P57页
+
+
+	3、aggregateByKey
+	4、coalesce和repartition
+	5、其他高级算子：参考文档
+	   http://homepage.cs.latrobe.edu.au/zhe/ZhenHeSparkRDDAPIExamples.html
+
+
+
+eg:
+
+
+1、创建一个RDD（数字）
+    val rdd1 = sc.parallelize(List(5,6,1,2,10,4,12,20,100,30))
+
+	每个元素*2，然后排序
+	val rdd2 = rdd1.map(_*2).sortBy(x=>x,true)
+
+	完整
+	val rdd2 = rdd1.map((x:Int)=>x*2)
+
+	过滤出大于10的元素
+	val rdd3 = rdd2.filter(_>10)
+	rdd3.collect
+
+2、创建一个RDD（字符）
+   val rdd1 = sc.parallelize(Array("a b c","d e f","h i j"))
+   val rdd2 = rdd1.flatMap(_.split(' '))
+   rdd2.collect
+
+3、集合运算、去重
+    val rdd1 = sc.parallelize(List(5,6,7,8,1,2))
+	val rdd2 = sc.parallelize(List(1,2,3,4))
+
+	val rdd3 = rdd1.union(rdd2)
+	rdd3.distinct.collect
+	val rdd4 = rdd1.intersection(rdd2)
+
+4、分组
+    val rdd1 = sc.parallelize(List(("Tom",1000),("Jerry",3000),("Mary",2000)))
+	val rdd2 = sc.parallelize(List(("Jerry",500),("Tom",3000),("Mike",2000)))
+
+	并集
+	val rdd3 = rdd1 union rdd2
+	scala> val rdd4 = rdd3.groupByKey
+	rdd4: org.apache.spark.rdd.RDD[(String, Iterable[Int])] = ShuffledRDD[27] at groupByKey at <console>:30
+
+	scala> rdd4.collect
+	res8: Array[(String, Iterable[Int])] = Array((Tom,CompactBuffer(1000, 3000)),
+                                                 (Jerry,CompactBuffer(3000, 500)),
+												 (Mike,CompactBuffer(2000)),
+												 (Mary,CompactBuffer(2000)))
+
+
+
+
+案例三：访问数据库
+		（*）问题：在哪里创建创建一个Connection对象
+		（*）针对RDD： foreach和foreachPartition
+
+			如果把Connection创建放在最上边，错误的！！！！！
+			Caused by: java.io.NotSerializableException: oracle.jdbc.driver.T4CConnection
+
+		（*）更好的一个做法：foreachPartition  ---> 针对每个分区进行操作（比如：跟外部系统通信）
+		（*）使用JdbcRDD 直接访问数据
+			  局限：An RDD that executes a SQL query on a JDBC connection and reads results.
+			        For usage example, see test case JdbcRDDSuite.
+					只能进行select操作
+					只能接受两个参数
+
+			JdbcRDD(sc: SparkContext,    SparkContext对象
+			       getConnection: () ⇒ Connection,   数据库的链接
+				   sql: String,                   Select语句
+				   lowerBound: Long,   Select语句下界，就是Select的第一个参数
+				   upperBound: Long,   Select语句上界，就是Select的第二个参数
+				   numPartitions: Int,  分区个数, 启动多少个Executor
+				   mapRow: (ResultSet) ⇒  结果集
+

@@ -1,0 +1,13 @@
+1、load和save函数： 默认都是Parquet文件
+		（*）使用load函数加载数据，自动生成表（DataFrame）
+		（*）注意：load函数默认的数据源是Parquet文件
+			val usersDF = spark.read.load("/root/training/spark-2.1.0-bin-hadoop2.7/examples/src/main/resources/users.parquet")
+
+			对比：  spark.read.json("/root/training/spark-2.1.0-bin-hadoop2.7/examples/src/main/resources/people.json")
+
+			查询：usersDF.show
+
+		（*）使用save函数保存结果
+			 需求：查询用户的名字和喜欢的颜色，并保存
+			scala> usersDF.select($"name",$"favorite_color").write.save("/root/temp/result")
+			scala> val testResult = spark.read.load("/root/temp/result/part-00000-1dfafff2-25d3-4d5f-83c0-c3330f85c8b1.snappy.parquet")

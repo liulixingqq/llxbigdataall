@@ -1,0 +1,32 @@
+二、Spark Streaming进阶
+	1、类：StreamingContext（类似：Spark Context、SQLContext）
+		上下文对象
+
+	   创建的方式：
+	   （1）通过SparkConf来创建
+				val sparkconf = new SparkConf().setAppName("MyNetworkWordCount").setMaster("local[2]")
+
+				//创建StreamingContext，表示每隔3秒采集一次数据
+				val ssc = new StreamingContext(sparkconf,Seconds(3))
+
+	   （2）通过SparkContext对象来创建
+			import org.apache.spark.streaming.{Seconds, StreamingContext}
+			val ssc = new StreamingContext(sc,Seconds(3))
+
+		说明：
+		（1）setMaster("local[2]")
+		（2）当创建StreamingContext对象，内部会创建一个SparkContext对象
+		（3）当StreamingContext开始执行，不能添加新的任务
+		（4）同一个时刻上，JVM只能由一个活动的StreamingContext
+
+	2、DStream（离散流）：把连续的数据流，变成不连续的离散流，表现形式就是RDD
+	                      简单来说：把连续的变成不连续的
+						  操作：Transformation和Action
+
+			（*）transform(func)
+				通过RDD-to-RDD函数作用于源DStream中的各个RDD，可以是任意的RDD操作，从而返回一个新的RDD
+
+			（*）updateStateByKey(func)
+				操作允许不断用新信息更新它的同时保持任意状态。
+				定义状态-状态可以是任何的数据类型
+				定义状态更新函数-怎样利用更新前的状态和从输入流里面获取的新值更新状态

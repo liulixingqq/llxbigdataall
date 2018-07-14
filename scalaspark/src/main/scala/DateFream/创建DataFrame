@@ -1,0 +1,54 @@
+3、创建DataFrame:（create table *****）
+		（*）测试数据：emp.csv和dept.csv
+			7654,MARTIN,SALESMAN,7698,1981/9/28,1250,1400,30
+
+		（1）方式一：通过case class定义表
+			（*）定义一个case class来代表emp表的schema结构
+				case class Emp(empno:Int,ename:String,job:String,mgr:String,hiredate:String,sal:Int,comm:String,deptno:Int)
+
+			（*）导入emp.csv文件
+			     val lines = sc.textFile("/root/temp/emp.csv").map(_.split(","))
+
+			（*）生成一个表：DataFrame
+				   将case class和RDD（lines）关联起来
+				   Array(7369, SMITH, CLERK, 7902, 1980/12/17, 800, "", 20)
+
+				   val allEmp = lines.map(x=>Emp(x(0).toInt,x(1),x(2),x(3),x(4),x(5).toInt,x(6),x(7).toInt))
+				   生成表:
+				   val empDF = allEmp.toDF
+
+				   操作：
+				   empDF.show
+				   empDF.printSchema
+
+
+		（2）方式二：通过SparkSession.createDataFrame()
+			（*）什么是Spark Session?
+				日志：Spark session available as 'spark'.
+				从spark 2.0后，新的访问接口（统一的访问方式），通过SparkSession对象可以访问Spark的各个模块
+
+			（*）数据：
+					val empCSV = sc.textFile("/root/temp/emp.csv").map(_.split(","))
+
+
+				 结构：Schema  ----> 类：StructType
+				    import org.apache.spark.sql._
+					import org.apache.spark.sql.types._
+
+					参考讲义：
+					val myschema = StructType(List(StructField("empno", DataTypes.IntegerType), StructField("ename", DataTypes.StringType),StructField("job", DataTypes.StringType),StructField("mgr", DataTypes.StringType),StructField("hiredate", DataTypes.StringType),StructField("sal", DataTypes.IntegerType),StructField("comm", DataTypes.StringType),StructField("deptno", DataTypes.IntegerType)))
+
+			（*）把读入的数据empCSV映射一行Row：注意这里没有带结构
+					import org.apache.spark.sql._
+
+					val rowRDD = empCSV.map(x=>Row(x(0).toInt,x(1),x(2),x(3),x(4),x(5).toInt,x(6),x(7).toInt))
+
+			（*）通过SparkSession.createDataFrame(数据，schema结构)创建表
+			        val df = spark.createDataFrame(rowRDD,myschema)
+
+		（3）方式三：直接读取一个具有格式的数据文件(例如：json文件)
+				前提：数据文件本身具有格式
+				Example数据文件：
+				/root/training/spark-2.1.0-bin-hadoop2.7/examples/src/main/resources/people.json
+
+				示例：val peopleDF = spark.read.json("/root/training/spark-2.1.0-bin-hadoop2.7/examples/src/main/resources/people.json")

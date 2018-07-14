@@ -1,0 +1,24 @@
+4、JDBC方式: 读取关系型数据库中的数据（Oracle）
+		（*）需要把JDBC的驱动加入
+			bin/spark-shell --master spark://bigdata11:7077 --jars /root/temp/ojdbc6.jar --driver-class-path /root/temp/ojdbc6.jar
+
+		（*）读取Oracle
+				val oracleEmp = spark.read.format("jdbc").option("url","jdbc:oracle:thin:@192.168.157.101:1521/orcl.example.com").option("dbtable","scott.emp").option("user","scott").option("password","tiger").load
+
+
+			使用Properties类
+
+				scala> import java.util.Properties
+				import java.util.Properties
+
+				scala> val prop = new Properties()
+				prop: java.util.Properties = {}
+
+				scala> prop.setProperty("user","scott")
+				res1: Object = null
+
+				scala> prop.setProperty("password","tiger")
+				res2: Object = null
+
+				scala> val oracleDF1 = spark.read.jdbc("jdbc:oracle:thin:@192.168.157.101:1521/orcl.example.com","scott.emp",prop)
+				oracleDF1: org.apache.spark.sql.DataFrame = [EMPNO: decimal(4,0), ENAME: string ... 6 more fields]
