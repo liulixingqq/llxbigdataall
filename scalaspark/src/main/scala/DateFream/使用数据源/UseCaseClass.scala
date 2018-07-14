@@ -30,7 +30,7 @@ object UseCaseClass {
 
     sparkSession.stop()
   }
+  //定义样本类: schema
+  case class Student(stuID:Int,stuName:String,stuAge:Int)
 }
 
-//定义样本类: schema
-case class Student(stuID:Int,stuName:String,stuAge:Int)
