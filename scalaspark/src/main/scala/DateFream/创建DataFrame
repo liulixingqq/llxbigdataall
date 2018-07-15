@@ -15,6 +15,9 @@
 
 				   val allEmp = lines.map(x=>Emp(x(0).toInt,x(1),x(2),x(3),x(4),x(5).toInt,x(6),x(7).toInt))
 				   生成表:
+
+				    //不导入隐士转化，无法toDF
+				   import spark.implicits._
 				   val empDF = allEmp.toDF
 
 				   操作：
