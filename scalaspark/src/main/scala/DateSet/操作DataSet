@@ -1,0 +1,36 @@
+（*）使用emp.json 生成DataFrame
+  val empDF = spark.read.json("/root/resources/emp.json")
+  查询工资大于3000的员工
+  empDF.where($"sal" >= 3000).show
+
+（*）创建case class
+case class Emp(empno:Long,ename:String,job:String,hiredate:String,mgr:String,sal:Long,comm:String,deptno:Long)
+
+（*）生成DataSets，并查询数据
+     val empDS = empDF.as[Emp]
+
+     查询工资大于3000的员工
+     empDS.filter(_.sal > 3000).show
+
+     查看10号部门的员工
+     empDS.filter(_.deptno == 10).show
+
+（*）多表查询
+1、创建部门表
+val deptRDD=sc.textFile("/root/temp/dept.csv").map(_.split(","))
+case class Dept(deptno:Int,dname:String,loc:String)
+val deptDS = deptRDD.map(x=>Dept(x(0).toInt,x(1),x(2))).toDS
+
+2、创建员工表
+case class Emp(empno:Int,ename:String,job:String,mgr:String,hiredate:String,sal:Int,comm:String,deptno:Int)
+val empRDD = sc.textFile("/root/temp/emp.csv").map(_.split(","))
+val empDS = empRDD.map(x => Emp(x(0).toInt,x(1),x(2),x(3),x(4),x(5).toInt,x(6),x(7).toInt)).toDS
+
+3、执行多表查询：等值链接
+    val result = deptDS.join(empDS,"deptno")
+
+    另一种写法：注意有三个等号
+    val result = deptDS.joinWith(empDS,deptDS("deptno")=== empDS("deptno"))
+    joinWith和join的区别是连接后的新Dataset的schema会不一样
+
+（*）查看执行计划：result.explain

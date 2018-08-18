@@ -1,0 +1,32 @@
+方式一：使用序列
+1、定义case class
+    case class MyData(a:Int,b:String)
+
+2、生成序列，并创建DataSet
+   val ds = Seq(MyData(1,"Tom"),MyData(2,"Mary")).toDS
+3、查看结果
+    ds.show
+
+方式2   使用JSON数据 创建DataFrame  再转化成DataSet
+1、定义case class
+    case class Person(name: String, gender: String)
+2、通过JSON数据生成DataFrame
+    val df = spark.read.json(sc.parallelize("""{"gender": "Male", "name": "Tom"}""" :: Nil))
+3、将DataFrame转成DataSet
+   df.as[Person].show
+   df.as[Person].collect、
+
+
+ 方式三：使用HDFS数据 spark.read读取数据，生成的直接是  dataFrame
+ 1、读取HDFS数据，并创建DataSet
+  val linesDS = spark.read.text("hdfs://hadoop111:9000/data/data.txt").as[String]
+
+ 2、对DataSet进行操作：分词后，查询长度大于3的单词
+   val words = linesDS.flatMap(_.split(" ")).filter(_.length > 3)
+   words.show
+   words.collect
+
+ 3、执行WordCount程序
+  val result = linesDS.flatMap(_.split(" ")).map((_,1)).groupByKey(x => x._1).count
+  result.show
+  排序：result.orderBy($"value").show
